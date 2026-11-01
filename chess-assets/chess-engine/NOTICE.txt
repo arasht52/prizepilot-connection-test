@@ -1,0 +1,21 @@
+PrizePilot chess third-party notices
+
+chess.js 1.4.0: BSD-2-Clause. Copyright Jeff Hlywa and contributors.
+License: chess-js-LICENSE.txt
+Source: https://github.com/jhlywa/chess.js/tree/v1.4.0
+
+Stockfish.js npm 18.0.8, Stockfish 18 lite single-thread, unmodified.
+Copyright 2026 Chess.com LLC and Stockfish contributors.
+License: GNU GPL version 3; see GPL-3.0.txt.
+Upstream source and build instructions: https://github.com/nmrugg/stockfish.js
+Exact npm gitHead: 93c994592dcf3b4b21052ab925e9b534df9c0918
+Release source: https://github.com/nmrugg/stockfish.js/tree/93c994592dcf3b4b21052ab925e9b534df9c0918
+Build command: node build.js --single-threaded --lite -f
+Artifact hashes: SHA256SUMS
+This engine is a separate UCI Web Worker. No warranty.
+
+Source download: stockfish-18.0.8-source.zip
+Additional build input: nn-9067e33176e8.nnue
+Source provenance and build instructions: SOURCE-README.txt
+Source and network are hosted alongside the engine; see SHA256SUMS.
+A bit-for-bit rebuild and a legal determination about the enclosing site are not claimed.
