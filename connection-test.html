@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://www.prizepilot.net https://api.prizepilot.net https://sixfgoxyxuanimohcmdc.supabase.co https://prizepilot-chess-stage.onrender.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>بررسی اتصال PrizePilot</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f5f3ed;color:#12303f;font:16px/1.8 Tahoma,Arial,sans-serif}main{max-width:880px;margin:auto;padding:24px 16px}h1{font-size:25px;margin:0 0 12px}p{margin:10px 0}.card{background:white;border:1px solid #d7dfdc;border-radius:16px;padding:18px;margin:14px 0}.controls{display:flex;gap:10px;flex-wrap:wrap}button{min-height:44px;padding:8px 18px;border:1px solid #aabcb8;border-radius:10px;background:white;color:#12303f;font:inherit;cursor:pointer}button.primary{background:#f1bf4e;border-color:#dba72f;font-weight:bold}button:disabled{opacity:.55;cursor:default}button:focus-visible,textarea:focus-visible{outline:3px solid #2572a0;outline-offset:3px}.note{font-size:14px;color:#536975}.test{padding:14px 0;border-bottom:1px solid #e2e8e5}.test:last-child{border:0}.line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.url{display:block;direction:ltr;text-align:left;overflow-wrap:anywhere;font:13px/1.8 monospace;color:#536975}.badge{display:inline-block;font:bold 14px/1.8 Arial,sans-serif;direction:ltr;border-radius:7px;padding:2px 9px;background:#edf1f0}.pass{background:#e2f3e8;color:#126333}.fail{background:#ffe7e5;color:#982323}.unknown,.waking{background:#fff0cb;color:#775000}.detail{font-size:14px;margin-top:6px;overflow-wrap:anywhere}.time{font:14px Arial,sans-serif;direction:ltr;display:inline-block}textarea{width:100%;min-height:240px;font:13px/1.6 monospace;direction:ltr;text-align:left;padding:12px;border:1px solid #aabcb8;border-radius:8px}summary{cursor:pointer;min-height:44px;padding:8px 0}code{direction:ltr;unicode-bidi:isolate}strong{font-weight:bold}@media(max-width:480px){main{padding:16px 12px}.card{padding:14px}h1{font-size:22px}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>بررسی اتصال PrizePilot</h1>
+  <p>این صفحه مستقل از برنامه است. یک‌بار بدون VPN و یک‌بار با VPN آزمایش کن و نتیجه‌ها را مقایسه کن.</p>
+  <p class="note">فقط درخواست‌های GET به مقصدهای مشخص فرستاده می‌شود. ورود، کلید API، ثبت اطلاعات، تحلیل‌گر و ارسال خودکار گزارش نداریم. هیچ فایل جاوااسکریپتِ آزمایش‌شده‌ای اجرا نمی‌شود.</p>
+  <noscript><p class="card">برای اجرای آزمون‌ها، JavaScript مرورگر باید روشن باشد.</p></noscript>
+  <div class="controls">
+    <button id="run" class="primary" type="button">شروع بررسی</button>
+    <button id="copy" type="button" disabled>کپی نتیجه‌ها</button>
+  </div>
+  <p id="summary" role="status" aria-live="polite">هنوز بررسی نشده.</p>
+  <p id="progress" role="status" aria-live="polite">هنوز آزمونی اجرا نشده است.</p>
+  <section class="card" aria-label="نتیجهٔ آزمون‌ها">
+    <div class="test"><div class="line"><strong>۱. مبدأ فرانت‌اند اصلی</strong><span id="status-frontend" class="badge">—</span><span id="time-frontend" class="time"></span></div><span id="url-frontend" class="url">https://www.prizepilot.net/connectivity/probe.json</span><div id="detail-frontend" class="detail"></div></div>
+    <div class="test"><div class="line"><strong>۲. فایل ثابت آزمایشی JavaScript</strong><span id="status-javascript" class="badge">—</span><span id="time-javascript" class="time"></span></div><span id="url-javascript" class="url">https://www.prizepilot.net/connectivity/asset-probe.js</span><div id="detail-javascript" class="detail"></div></div>
+    <div class="test"><div class="line"><strong>۳. پاسخ‌دهی API</strong><span id="status-api" class="badge">—</span><span id="time-api" class="time"></span></div><span id="url-api" class="url">https://api.prizepilot.net/api/probe</span><div id="detail-api" class="detail"></div></div>
+    <div class="test"><div class="line"><strong>۴. دسترسی شبکه به Supabase</strong><span id="status-supabase" class="badge">—</span><span id="time-supabase" class="time"></span></div><span id="url-supabase" class="url">https://sixfgoxyxuanimohcmdc.supabase.co/auth/v1/settings</span><div id="detail-supabase" class="detail"></div></div>
+    <div class="test"><div class="line"><strong>۵. فرانت‌اند شطرنج آزمایشی</strong><span id="status-chess" class="badge">—</span><span id="time-chess" class="time"></span></div><span id="url-chess" class="url">https://prizepilot-chess-stage.onrender.com/api/probe</span><div id="detail-chess" class="detail"></div></div>
+  </section>
+  <section class="card">
+    <strong>نتیجه‌ها چه معنایی دارند؟</strong>
+    <p class="note"><b>PASS</b>: پاسخ مورد انتظار دریافت شد. <b>FAIL</b>: probe عمومی ما بارگذاری نشد یا پاسخ خطا / محتوای اشتباه داشت. <b>UNKNOWN</b>: مرورگر نتوانست شبکه را از محدودیت امنیتی جدا کند. هیچ‌یک به‌تنهایی ثابت نمی‌کند مقصد فیلتر است.</p>
+    <p class="note">probeهای خودمان اجازهٔ خواندن از دامنه‌های دیگر را دارند؛ شکست آن‌ها FAIL است. برای Supabase که تنظیماتش دست ما نیست، خطای CORS/CORP یا شبکه UNKNOWN می‌ماند. FAIL علت فیلترینگ، DNS، TLS یا قطعی سرور را جدا نمی‌کند. برای سرویس رایگان شطرنج ابتدا یک درخواست بیدارباش می‌فرستیم؛ اگر پاسخ نرسید، ۳۰ ثانیه بعد دوباره امتحان کن.</p>
+    <p class="note">ردیف فایل، یک فایل ثابت آزمایشی را از همان میزبان می‌خواند و آن را اجرا نمی‌کند؛ دانلود یا اجرای باندل واقعی برنامه را تضمین نمی‌کند. ردیف API سلامت پاسخ‌دهی عمومی را بررسی می‌کند، نه دیتابیس یا ورود. Supabase بدون کلید فقط از نظر دریافت پاسخ آزمایش می‌شود.</p>
+    <p class="note">این صفحه DNS، TLS، فیلترینگ، WebSocket و عملکرد بازی را جداگانه تشخیص نمی‌دهد. اگر صفحه باز نشد، کپی مستقل آن را باز کن؛ بازنشدن این صفحه دربارهٔ بقیهٔ سرویس‌ها نتیجه‌ای نمی‌دهد.</p>
+  </section>
+  <section id="manual" class="card" hidden>
+    <label for="results">اگر کپی خودکار کار نکرد، متن زیر را انتخاب و دستی کپی کن.</label>
+    <textarea id="results" readonly spellcheck="false"></textarea>
+  </section>
+</main>
+<script>
+'use strict';
+const FRONTEND = 'https://www.prizepilot.net';
+const MARKER = 'prizepilot-connectivity-v2';
+const TESTS = [
+  {id:'frontend',owned:true,url:FRONTEND+'/connectivity/probe.json',kind:'json',timeout:8000},
+  {id:'javascript',owned:true,url:FRONTEND+'/connectivity/asset-probe.js',kind:'asset',timeout:8000},
+  {id:'api',owned:true,url:'https://api.prizepilot.net/api/probe',kind:'json',timeout:8000},
+  {id:'supabase',url:'https://sixfgoxyxuanimohcmdc.supabase.co/auth/v1/settings',kind:'reachability',timeout:8000},
+  {id:'chess',owned:true,url:'https://prizepilot-chess-stage.onrender.com/api/probe',kind:'json',timeout:15000,wake:true}
+];
+let results = [];
+async function attempt(test) {
+  const started=performance.now(), controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),test.timeout);
+  const finish=(status,note,extra={})=>({id:test.id,url:test.url,status,ms:Math.round(performance.now()-started),note,...extra});
+  const options={method:'GET',credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',signal:controller.signal};
+  // Fixed targets only; the nonce prevents a cached success hiding an outage.
+  const url=new URL(test.url);url.searchParams.set('probe',String(Date.now()));
+  try {
+    const response=await fetch(url.href,{...options,mode:'cors'});
+    if(response.type==='opaque')return finish(test.owned?'FAIL':'UNKNOWN',test.owned?'از این اینترنت در دسترس نیست':'مرورگر اجازهٔ خواندن پاسخ را نداد.',{evidence:'policy'});
+    const http=response.status;
+    if(test.kind==='reachability'&&http===401){await response.body?.cancel();return finish('PASS','پاسخ بدون کلید دریافت شد؛ فقط دسترسی شبکه تأیید شد.',{http,evidence:'http'});}
+    if(!response.ok){await response.body?.cancel();return finish('FAIL','پاسخ HTTP خطا دریافت شد؛ این به معنی فیلترشدن نیست.',{http,evidence:'http'});}
+    const body=await response.text(),type=response.headers.get('content-type')||'';
+    let valid=test.kind==='reachability';
+    if(test.kind==='json'){try{const data=JSON.parse(body);valid=/application\/json/i.test(type)&&data.ok===true&&data.probe===MARKER;}catch{}}
+    if(test.kind==='asset')valid=/(?:java|ecma)script/i.test(type)&&body.trim()==='/* '+MARKER+' */';
+    return finish(valid?'PASS':'FAIL',valid?'پاسخ مورد انتظار دریافت شد.':'پاسخ دریافت شد، اما probe مورد انتظار نیست؛ ممکن است تنظیم انتشار ناقص باشد.',{http,evidence:'http'});
+  } catch {
+    if(controller.signal.aborted)return finish(test.owned?'FAIL':'UNKNOWN',test.owned?'از این اینترنت در دسترس نیست؛ پاسخ در مهلت تعیین‌شده نرسید.':'پاسخ در مهلت تعیین‌شده نرسید؛ علت مشخص نیست.',{evidence:'timeout'});
+    // Our fixed public probes have verified permissive CORS/CORP. Do not use
+    // opaque fallbacks to turn an unreadable HTTP error into a healthy PASS.
+    if(test.owned)return finish('FAIL','از این اینترنت در دسترس نیست',{evidence:'network'});
+    // Uncontrolled origins can deny cross-origin reads. Their failure stays
+    // UNKNOWN; no-cors success cannot establish HTTP health.
+    try {
+      const response=await fetch(url.href,{...options,mode:'no-cors'});await response.body?.cancel();
+      return finish('UNKNOWN','پاسخ قابل‌خواندن نیست؛ مرورگر احتمالاً بررسی را محدود کرده است.',{evidence:'policy'});
+    } catch {
+      return finish('UNKNOWN','درخواست بارگذاری نشد؛ شبکه، DNS، TLS یا سیاست مرورگر قابل تفکیک نیستند.',{evidence:controller.signal.aborted?'timeout':'network-or-policy'});
+    }
+  } finally {clearTimeout(timer);}
+}
+async function probe(test) {
+  if(!test.wake)return attempt(test);
+  const warm=await attempt({...test,timeout:10000});
+  if(warm.status==='PASS')return warm;
+  // One warm-up followed by one bounded retry. A free instance can need longer.
+  const result=await attempt(test);result.ms+=warm.ms;
+  if((result.evidence==='timeout')||[502,503,504].includes(result.http))return {...result,status:'WAKING',note:'ممکنه سرور در حال بیدارشدن باشه؛ ۳۰ ثانیه بعد دوباره امتحان کن. قطعی یا فیلتر تأیید نشده.'};
+  return result;
+}
+function summaryText(items) {
+  if(items.length===TESTS.length&&items.every(x=>x.status==='PASS'))return '✅ همه‌چیز در دسترسه';
+  const main=items.find(x=>x.id==='frontend');
+  if(main?.status==='FAIL')return '❌ سایت اصلی از این اینترنت باز نمی‌شه؛ جزئیات پایین رو ببین';
+  return '⚠️ نامشخص — نتیجه برای تشخیص قطعی کافی نیست';
+}
+function show(result) {
+  const badge = document.getElementById('status-'+result.id);
+  badge.textContent = result.status;
+  badge.className = 'badge ' + result.status.toLowerCase();
+  document.getElementById('time-'+result.id).textContent = result.ms == null ? '—' : result.ms+' ms';
+  document.getElementById('detail-'+result.id).textContent = (result.http ? 'HTTP '+result.http+' — ' : '')+result.note;
+  if (result.url) document.getElementById('url-'+result.id).textContent = result.url;
+  results.push(result);
+}
+function reportText() {
+  return ['PrizePilot connection test v2','No account data, keys, IP address or user-agent collected.',
+    ...TESTS.map(test => {
+      const result = results.find(value => value.id === test.id);
+      if (!result) return test.id+': not completed';
+      return [result.id+': '+result.status+' | '+(result.ms == null ? 'not run' : result.ms+' ms')+' | '+(result.evidence||'unknown')+(result.http ? ' | HTTP '+result.http : ''),result.url||'Asset not identified',result.note].join('\n');
+    }),
+    summaryText(results), 'Owned probes require permissive CORS/CORP: request failure is FAIL. Uncontrolled origins may be UNKNOWN. Neither status proves filtering.'
+  ].join('\n\n');
+}
+async function runTests() {
+  const run = document.getElementById('run'), copy = document.getElementById('copy');
+  run.disabled=true;copy.disabled=true;results=[];
+  document.getElementById('manual').hidden=true;
+  document.getElementById('progress').textContent='در حال بررسی؛ حداکثر حدود ۲۵ ثانیه صبر کن…';
+  for (const test of TESTS) {
+    document.getElementById('status-'+test.id).textContent='…';
+    document.getElementById('status-'+test.id).className='badge';
+    document.getElementById('time-'+test.id).textContent='';
+    document.getElementById('detail-'+test.id).textContent='';
+  }
+  document.getElementById('summary').textContent='در حال بررسی…';
+  try {
+    await Promise.all(TESTS.map(async test=>show(await probe(test))));
+    document.getElementById('summary').textContent=summaryText(results);
+    document.getElementById('progress').textContent='بررسی تمام شد. نتیجه‌ها را کپی کن؛ سپس با وضعیت دیگر VPN تکرار کن.';
+  } catch {
+    document.getElementById('progress').textContent='بررسی کامل نشد. نتیجه‌های موجود را می‌توانی کپی کنی.';
+  } finally {run.disabled=false;copy.disabled=results.length===0;}
+}
+async function copyResults() {
+  const text=reportText(), area=document.getElementById('results');area.value=text;
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error('Manual copy');
+    await navigator.clipboard.writeText(text);
+    document.getElementById('progress').textContent='نتیجه‌ها کپی شدند.';
+  } catch {
+    document.getElementById('manual').hidden=false;area.focus();area.select();
+    document.getElementById('progress').textContent='کپی خودکار ممکن نشد؛ متن انتخاب‌شده را دستی کپی کن.';
+  }
+}
+document.getElementById('run').addEventListener('click',runTests);
+document.getElementById('copy').addEventListener('click',copyResults);
+</script>
+</body>
+</html>
